@@ -1,0 +1,183 @@
+@use 'sass:math';
+
+$aqua-blue: #0a3d6b;
+$water-blue: #1a6bb0;
+$fish-color: #ff9f43;
+$plant-color: #3cb371;
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+.container {
+    width: 600px;
+    height: 400px;
+    position: relative;
+    background: $aqua-blue;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+}
+
+.water {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(to bottom, $water-blue, $aqua-blue);
+}
+
+.loadingText {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+}
+
+// Анимация плавания рыбки
+@keyframes swim {
+
+    0%,
+    100% {
+        transform: translateX(0) rotateY(0);
+    }
+
+    25% {
+        transform: translateX(50px) rotateY(0);
+    }
+
+    50% {
+        transform: translateX(100px) rotateY(180deg);
+    }
+
+    75% {
+        transform: translateX(50px) rotateY(180deg);
+    }
+}
+
+.fish {
+    width: 50px;
+    height: 30px;
+    background: $fish-color;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 20%;
+    animation: swim 3s infinite ease-in-out;
+    z-index: 2;
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        top: 8px;
+        left: 5px;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: $fish-color;
+        top: 5px;
+        right: -5px;
+        transform: rotate(30deg);
+    }
+}
+
+// Анимация пузырьков
+@keyframes bubbleFloat {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-100px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+.bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: bubbleFloat 3s infinite ease-in;
+    bottom: 0;
+    z-index: 1;
+
+    &1 {
+        left: 15%;
+        width: 8px;
+        height: 8px;
+        animation-duration: 2.5s;
+    }
+
+    &2 {
+        left: 30%;
+        width: 12px;
+        height: 12px;
+        animation-duration: 3s;
+        animation-delay: 0.5s;
+    }
+
+    &3 {
+        left: 25%;
+        width: 5px;
+        height: 5px;
+        animation-duration: 2s;
+        animation-delay: 1s;
+    }
+}
+
+// Анимация водорослей
+@keyframes plantSway {
+
+    0%,
+    100% {
+        transform: skewX(0deg);
+    }
+
+    50% {
+        transform: skewX(10deg);
+    }
+}
+
+.plant {
+    position: absolute;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(to top, darken($plant-color, 10%), $plant-color);
+    border-radius: 10px 10px 0 0;
+    animation: plantSway 4s infinite ease-in-out;
+    transform-origin: bottom center;
+    z-index: 1;
+
+    &1 {
+        left: 10%;
+        height: 60px;
+    }
+
+    &2 {
+        left: 80%;
+        height: 40px;
+        animation-duration: 5s;
+    }
+}
