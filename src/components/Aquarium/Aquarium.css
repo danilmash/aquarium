@@ -9,7 +9,6 @@
 }
 
 .container {
-    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -52,6 +51,11 @@
     border-radius: 8px;
 }
 
+.code-panel{
+    flex-grow: 2;
+    height: 300px;
+}
+
 .task-panel,
 .aquarium-panel {
     background-color: #e9f5ff;
@@ -85,6 +89,7 @@
 
 .hint-text {
     color: #854d0e;
+    margin-bottom: 1.5em;
 }
 
 .navigation-buttons {
@@ -122,10 +127,29 @@
     color: white;
     padding: 10px 24px;
     font-size: 16px;
+    margin-right: 1em;
 }
 
 .button:hover:not(:disabled) {
     opacity: 0.9;
+}
+
+.button-undo {
+  background: linear-gradient(to bottom, #6c757d, #5a6268);
+  color: white;
+  border-bottom: 3px solid #4a5258;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.button-undo:hover {
+  background: linear-gradient(to bottom, #5a6268, #484f54);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button-reset{
+    background-color: red;
+    color: white;
 }
 
 /* Стили для панели кода */
