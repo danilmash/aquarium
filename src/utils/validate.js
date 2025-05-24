@@ -8,7 +8,7 @@
 export const validate = (rule, data, rulesObject) => {
   switch (rule) {
     case 'includesString':
-      return data.includes(rulesObject['includes']);
+      return data.includes(rulesObject['includesString']);
     case 'range':
       return data >= rulesObject['range']['min'] && data <= rulesObject['range']['max'];
     case 'includesOneOf':

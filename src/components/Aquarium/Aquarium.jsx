@@ -160,7 +160,7 @@ export const Aquarium = () => {
 
   useEffect(() => {
     loadTask();
-  }, []);
+  }, [level]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
