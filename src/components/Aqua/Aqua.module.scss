@@ -1,0 +1,179 @@
+@use 'sass:math';
+
+$aqua-blue: #0a3d6b;
+$water-blue: #1a6bb0;
+$plant-color: #3cb371;
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: #f0f8ff;
+}
+
+.container {
+    width: 800px;
+    height: 500px;
+    position: relative;
+    background: $aqua-blue;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+}
+
+.water {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: linear-gradient(to bottom, lighten($water-blue, 10%), $aqua-blue);
+    opacity: 0.9;
+}
+
+.controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border-radius: 0 0 10px 10px;
+
+    button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: 'Arial', sans-serif;
+        font-size: 12px;
+        font-weight: bold;
+        color: #333;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+}
+
+.fish {
+    position: absolute;
+    width: 30px;
+    height: 18px;
+    border-radius: 50% 60% 50% 50%;
+    z-index: 2;
+    cursor: pointer;
+    transition: transform 0.3s ease-out, filter 0.3s;
+    filter: brightness(1) saturate(1.2);
+    will-change: transform;
+    transform-origin: center;
+    margin-left: -15px;
+    margin-top: -9px;
+
+    &:hover {
+        transform: scale(1.8) !important;
+        filter: brightness(1.3) saturate(1.5);
+        z-index: 10;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50% 60% 50% 50%;
+        top: 3px;
+        left: -6px;
+        transform: rotate(180deg);
+    }
+
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: white;
+        border-radius: 50%;
+        top: 6px;
+        right: 4px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    }
+
+    &.clown {
+        background: linear-gradient(to right, #ff9f43, #ff7f00);
+
+        &::after {
+            background: linear-gradient(to right, #ff9f43, #ff7f00);
+        }
+    }
+
+    &.goldfish {
+        background: linear-gradient(to right, #ffcc00, #ffaa00);
+
+        &::after {
+            background: linear-gradient(to right, #ffcc00, #ffaa00);
+        }
+    }
+
+    &.angelfish {
+        width: 22px;
+        height: 30px;
+        margin-left: -11px;
+        margin-top: -15px;
+        background: linear-gradient(to right, #a0d1e7, #7bb8d4);
+
+        &::after {
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(to right, #a0d1e7, #7bb8d4);
+        }
+    }
+
+    &.neon {
+        background: linear-gradient(to right, #4fc1e9, #2ca9e1);
+
+        &::after {
+            background: linear-gradient(to right, #4fc1e9, #2ca9e1);
+        }
+    }
+
+    &.guppy {
+        background: linear-gradient(to right, #ff6b6b, #ff4d4d);
+
+        &::after {
+            background: linear-gradient(to right, #ff6b6b, #ff4d4d);
+        }
+    }
+
+    &.catfish {
+        width: 35px;
+        height: 14px;
+        margin-left: -17px;
+        margin-top: -7px;
+        background: linear-gradient(to right, #a58faa, #8c6d93);
+
+        &::after {
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(to right, #a58faa, #8c6d93);
+        }
+    }
+}
+
+/* Остальные стили (пузырьки, водоросли) остаются без изменений */
