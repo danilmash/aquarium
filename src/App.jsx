@@ -1,7 +1,5 @@
-import { Aquarium, Loader } from './components';
-import { Aqua } from './components/Aqua/Aqua';
+import { Home } from './components';
 
 export const App = () => {
-  // return <Aquarium />;
-  return <Aqua />;
+  return <Home />;
 };

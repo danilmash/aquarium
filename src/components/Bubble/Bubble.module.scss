@@ -1,0 +1,29 @@
+@use 'sass:math';
+
+
+
+// Анимация пузырьков
+@keyframes bubbleFloat {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-100px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+.bubble {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: bubbleFloat 3s infinite ease-in;
+    bottom: 0;
+    z-index: 1;
+}

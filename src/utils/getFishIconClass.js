@@ -1,12 +1,7 @@
-export const getFishIconClass = (selectedFish) => {
-  const fishesMap = {
-    клоун: 'clown',
-    гурами: 'neon',
-    данио: 'guppy',
-    цихлида: 'catfish',
-    'золотая рыбка': 'goldfish',
-  };
+import { getFishType } from './getFishType';
 
+export const getFishIconClass = (selectedFish) => {
   if (!selectedFish) return 'fishIcon';
-  return `fishIcon  ${fishesMap[selectedFish]}`;
+  const fishType = getFishType(selectedFish);
+  return `fishIcon  ${fishType}`;
 };

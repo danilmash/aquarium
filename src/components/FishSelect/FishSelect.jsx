@@ -13,12 +13,6 @@ export const FishSelect = ({ label = 'Выберите рыбку', options = fi
     setSelectedFish(e.target.value);
   };
 
-  //   const handleAddFish = () => {
-  //     if (selectedFish) {
-  //       setSelectedFish('');
-  //     }
-  //   };
-
   const fishIconClass = getFishIconClass(selectedFish);
 
   return (

@@ -1,0 +1,37 @@
+$plant-color: #3cb371;
+
+// Анимация водорослей
+@keyframes plantSway {
+
+    0%,
+    100% {
+        transform: skewX(0deg);
+    }
+
+    50% {
+        transform: skewX(10deg);
+    }
+}
+
+.plant {
+    position: absolute;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(to top, darken($plant-color, 10%), $plant-color);
+    border-radius: 10px 10px 0 0;
+    animation: plantSway 4s infinite ease-in-out;
+    transform-origin: bottom center;
+    z-index: 1;
+
+    &1 {
+        left: 10%;
+        height: 60px;
+
+    }
+
+    &2 {
+        left: 80%;
+        height: 40px;
+        animation-duration: 5s;
+    }
+}

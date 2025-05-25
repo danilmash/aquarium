@@ -1,276 +1,176 @@
-import { useState, useEffect, useCallback } from 'react';
-import './Aquarium.css';
-import { check } from '../../utils';
-import data from '../../data/tasks.json';
-import { compatibilityMap } from '../../data/fishes.json';
-import { FishSelect, Loader } from '..';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import styles from './Aquarium.module.scss';
+import { Bubble } from '../Bubble';
+import cn from 'classnames';
+import { Plant } from '../Plant';
+import { getRandomInteger } from '../../utils';
 
-const { tasks } = data;
+export const Aquarium = ({ type, propFish, onRemoveFish }) => {
+  const aquariumRef = useRef(null);
+  const animationRef = useRef();
+  const lastTimeRef = useRef(0);
 
-// Основной компонент приложения
-export const Aquarium = () => {
-  const [level, setLevel] = useState(1);
+  const [fishes, setFishes] = useState([]);
 
-  const [code, setCode] = useState('');
-  const [aquarium, setAquarium] = useState({});
-  const [task, setTask] = useState({});
-  const [output, setOutput] = useState('');
+  const Bubbles = useMemo(
+    () => Array.from({ length: getRandomInteger(100, 500) }).map((_, idx) => <Bubble key={`bubble_${idx}`} />),
+    [],
+  );
 
-  const [history, setHistory] = useState([]); // Массив для хранения истории состояний
-  const [historyIndex, setHistoryIndex] = useState(-1); // Текущий индекс в истории
+  const Plants = useMemo(
+    () => Array.from({ length: getRandomInteger(3, 8) }).map((_, idx) => <Plant key={`plant_${idx}`} />),
+    [],
+  );
 
-  // Функция для выполнения Python кода
-  const runCode = () => {
-    try {
-      // Очищаем вывод
-      setOutput('');
+  // Запуск анимации
+  const startAnimation = useCallback(() => {
+    if (!animationRef.current) {
+      lastTimeRef.current = 0;
+      animationRef.current = requestAnimationFrame(animate);
+    }
+  }, []);
 
-      // Создаем копию текущего аквариума
-      const newAquarium = { ...aquarium };
+  // Остановка анимации
+  const stopAnimation = useCallback(() => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+  }, []);
 
-      const newHistory = history.slice(0, historyIndex + 1);
-      newHistory.push({ aquarium: { ...aquarium }, code, output });
-      setHistory(newHistory);
-      setHistoryIndex(newHistory.length - 1);
+  // Добавление новой рыбки
+  const addFish = useCallback(
+    (type) => {
+      const container = aquariumRef.current?.getBoundingClientRect();
+      if (!container) return;
 
-      // Функции, доступные для использования в коде ученика
-      const pythonContext = {
-        set_aquarium_type: (type) => {
-          newAquarium.type = type;
-          return `Тип аквариума изменен на: ${type}`;
-        },
-        add_plant: (plant) => {
-          newAquarium.plants.push(plant);
-          return `Добавлено растение: ${plant}`;
-        },
-        remove_plant: (plant) => {
-          newAquarium.plants = newAquarium.plants.filter((p) => p !== plant);
-          return `Удалено растение: ${plant}`;
-        },
-        add_fish: (fish) => {
-          newAquarium.fish.push(fish);
-          return `Добавлена рыба: ${fish}`;
-        },
-        remove_fish: (fish) => {
-          newAquarium.fish = newAquarium.fish.filter((f) => f !== fish);
-          return `Удалена рыба: ${fish}`;
-        },
-        set_temperature: (temp) => {
-          newAquarium.temperature = temp;
-          return `Установлена температура: ${temp}°C`;
-        },
-        set_ph: (ph) => {
-          newAquarium.ph = ph;
-          return `Установлен pH: ${ph}`;
-        },
-        check_compatibility: (fish1, fish2) => {
-          const compatible = compatibilityMap[fish1]?.includes(fish2) || compatibilityMap[fish2]?.includes(fish1);
-
-          return `Рыбы ${fish1} и ${fish2} ${compatible ? 'совместимы' : 'несовместимы'}`;
-        },
-        print: (message) => {
-          setOutput((prev) => prev + message + '\n');
-          return message;
-        },
+      const newFish = {
+        type,
+        x: Math.random() * container.width,
+        y: Math.random() * container.height,
+        speed: 0.5 + Math.random() * 2,
+        angle: Math.random() * Math.PI * 2,
       };
-
-      // Имитация выполнения Python кода в JavaScript
-      // В реальном приложении здесь был бы Python интерпретатор
-      const lines = code.split('\n').filter((line) => !line.trim().startsWith('#') && line.trim() !== '');
-      let results = [];
-
-      for (const line of lines) {
-        if (line.includes('set_aquarium_type')) {
-          const match = line.match(/set_aquarium_type\(['"](.+)['"]\)/);
-          if (match) results.push(pythonContext.set_aquarium_type(match[1]));
-        } else if (line.includes('add_plant')) {
-          const match = line.match(/add_plant\(['"](.+)['"]\)/);
-          if (match) results.push(pythonContext.add_plant(match[1]));
-        } else if (line.includes('remove_plant')) {
-          const match = line.match(/remove_plant\(['"](.+)['"]\)/);
-          if (match) results.push(pythonContext.remove_plant(match[1]));
-        } else if (line.includes('add_fish')) {
-          const match = line.match(/add_fish\(['"](.+)['"]\)/);
-          if (match) results.push(pythonContext.add_fish(match[1]));
-        } else if (line.includes('set_temperature')) {
-          const match = line.match(/set_temperature\((\d+(?:\.\d+)?)\)/);
-          if (match) results.push(pythonContext.set_temperature(parseFloat(match[1])));
-        } else if (line.includes('set_ph')) {
-          const match = line.match(/set_ph\((\d+(?:\.\d+)?)\)/);
-          if (match) results.push(pythonContext.set_ph(parseFloat(match[1])));
-        } else if (line.includes('print')) {
-          const match = line.match(/print\(['"](.+)['"]\)/);
-          if (match) pythonContext.print(match[1]);
+      setFishes((prev) => {
+        const newFishes = [...prev, newFish];
+        // Если это первая рыбка, запускаем анимацию
+        if (newFishes.length === 1) {
+          startAnimation();
         }
-      }
+        return newFishes;
+      });
+    },
+    [startAnimation],
+  );
 
-      // Обновляем аквариум
-      setAquarium(newAquarium);
-
-      // Проверяем задание
-      if (check(task, newAquarium)) {
-        setOutput((prev) => prev + '\nОтлично! Задание выполнено успешно!');
-        setTask((prev) => ({ ...prev, isValid: true }));
-      } else if (task.validation) {
-        setOutput((prev) => prev + '\nПока не совсем правильно. Попробуй еще раз!');
-      }
-
-      // Выводим результаты выполнения
-      setOutput((prev) => prev + '\n' + results.join('\n'));
-    } catch (error) {
-      setOutput(`Ошибка: ${error.message}`);
-    }
+  // Удаление рыбки
+  const removeFish = (id) => {
+    setFishes((prev) => prev.filter((fish) => fish.id !== id));
+    onRemoveFish(id);
   };
 
-  // Функция для перехода к следующему уровню
-  const nextLevel = () => {
-    setLevel((prev) => prev + 1);
+  // Анимация движения рыбок
+  const animate = (time) => {
+    if (!lastTimeRef.current) lastTimeRef.current = time;
+    const deltaTime = time - lastTimeRef.current;
+    lastTimeRef.current = time;
+
+    setFishes((prevFishes) => {
+      const container = aquariumRef.current?.getBoundingClientRect();
+      if (!container) return prevFishes;
+
+      return prevFishes.map((fish) => {
+        // Плавное изменение направления
+        const angleChange = (Math.random() - 0.5) * 0.1;
+        let newAngle = fish.angle + angleChange;
+
+        // Движение вперед
+        const moveX = Math.cos(newAngle) * fish.speed * (deltaTime / 16);
+        const moveY = Math.sin(newAngle) * fish.speed * (deltaTime / 16);
+
+        let newX = fish.x + moveX;
+        let newY = fish.y + moveY;
+
+        // Отражение от границ
+        if (newX < 0 || newX > container.width) {
+          newAngle = Math.PI - newAngle;
+          newX = Math.max(0, Math.min(container.width, newX));
+        }
+
+        if (newY < 0 || newY > container.height) {
+          newAngle = -newAngle;
+          newY = Math.max(0, Math.min(container.height, newY));
+        }
+
+        return {
+          ...fish,
+          x: newX,
+          y: newY,
+          angle: newAngle,
+        };
+      });
+    });
+
+    animationRef.current = requestAnimationFrame(animate);
   };
-
-  // Функция для перехода к предыдущему уровню
-  const prevLevel = () => {
-    if (level > 1) {
-      setLevel((prev) => prev - 1);
-    }
-  };
-
-  const onClickFishButton = (value) => {
-    setCode((prev) => prev + `\nadd_fish("${value}")`);
-  };
-
-  const undo = () => {
-    if (historyIndex > 0) {
-      const prevState = history[historyIndex - 1];
-      setAquarium(prevState.aquarium);
-      setCode(prevState.code);
-      setOutput(prevState.output);
-      setHistoryIndex(historyIndex - 1);
-
-      // Также сбрасываем статус выполнения задания
-      setTask((prev) => ({ ...prev, isValid: false }));
-    }
-  };
-
-  const loadTask = useCallback(() => {
-    const initialTask = tasks.find((t) => t.id === level) || tasks[0];
-    setTask(initialTask);
-    setCode(initialTask.initialCode);
-    setAquarium(initialTask.aquarium);
-  }, [level]);
 
   useEffect(() => {
-    loadTask();
-  }, [level]);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-        e.preventDefault();
-        undo();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
+    if (!animationRef.current) {
+      startAnimation();
+    }
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      // Очистка при размонтировании компонента
+      stopAnimation();
     };
-  }, [historyIndex, undo]);
+  }, [startAnimation, stopAnimation]);
 
-  if (!Object.keys(aquarium).length || !Object.keys(task).length) {
-    return <Loader />;
-  }
+  useEffect(() => {
+    const container = aquariumRef.current?.getBoundingClientRect();
+    if (!container || !propFish) return;
+
+    setFishes((prevFishes) => {
+      const newFishes = propFish
+        .filter((fish) => !prevFishes.find(({ id }) => fish.id === id))
+        .map((fish) => ({
+          type: fish.type,
+          id: fish.id,
+          x: Math.random() * container.width,
+          y: Math.random() * container.height,
+          speed: 0.5 + Math.random() * 2,
+          angle: Math.random() * Math.PI * 2,
+        }));
+
+      return [...prevFishes, ...newFishes];
+    });
+  }, [propFish]);
+
   return (
-    <div className="container">
-      <header className="header">
-        <h1 className="title">ПитонАквариум</h1>
-        <p className="subtitle">Изучаем Python через аквариумистику</p>
-      </header>
+    <div className={styles.wrapper}>
+      <div className={styles.container} ref={aquariumRef}>
+        <div
+          className={cn(styles.water, {
+            [styles['water--black']]: type === 'тёмный',
+          })}
+        >
+          {/* растения */}
+          {Plants}
+          {/* пузырьки */}
+          {Bubbles}
 
-      <div className="app-layout">
-        {/* Левая панель с заданием */}
-        <div className="task-panel">
-          <h2 className="panel-title">
-            Задание {task.id}: {task.title}
-          </h2>
-          <p className="task-description">{task.description}</p>
-          <div className="hint-box">
-            <h3 className="hint-title">Подсказка:</h3>
-            <p className="hint-text">{task.hint}</p>
-            {task.fishSelect && <FishSelect onClickButton={onClickFishButton} />}
-            <button className="button button-reset" onClick={loadTask}>
-              Сбросить задание
-            </button>
-          </div>
-          <div className="navigation-buttons">
-            <button className="button button-prev" onClick={prevLevel} disabled={level === 1}>
-              ← Предыдущее
-            </button>
-            <button className="button button-next" onClick={nextLevel} disabled={!task.isValid}>
-              Следующее →
-            </button>
-          </div>
-        </div>
-
-        {/* Центральная панель с кодом */}
-        <div className="code-panel">
-          <h2 className="panel-title">Код на Python</h2>
-          <textarea className="code-editor" value={code} onChange={(e) => setCode(e.target.value)} />
-          <button className="button button-run" onClick={runCode}>
-            Запустить код
-          </button>
-          <button className="button button-undo" onClick={undo} disabled={historyIndex <= 0}>
-            Отменить (Ctrl+Z)
-          </button>
-
-          <div className="output-container">
-            <h3 className="output-title">Вывод программы:</h3>
-            <pre className="output-display">{output || 'Нажмите "Запустить код", чтобы увидеть результат'}</pre>
-          </div>
-        </div>
-
-        {/* Правая панель с визуализацией */}
-        <div className="aquarium-panel">
-          <h2 className="panel-title">Аквариум</h2>
-          <div className="aquarium-display">
-            {/* Визуализация аквариума */}
-            <div className="aquarium-bottom"></div>
-
-            {/* Растения */}
-            {aquarium.plants.includes('водоросли') && <div className="plant plant-seaweed"></div>}
-
-            {aquarium.plants.includes('коряга') && <div className="plant plant-driftwood"></div>}
-
-            {/* Рыбы */}
-            {aquarium.fish.includes('сом') && <div className="fish fish-catfish"></div>}
-
-            {aquarium.fish.includes('гуппи') && <div className="fish fish-guppy"></div>}
-
-            {aquarium.fish.includes('гурами') && <div className="fish fish-gourami"></div>}
-
-            {/* Тип аквариума влияет на визуальный стиль */}
-            {aquarium.type.includes('тёмный') && <div className="aquarium-overlay"></div>}
-          </div>
-
-          <div className="aquarium-params">
-            <h3 className="params-title">Параметры аквариума:</h3>
-            <ul className="params-list">
-              <li>
-                <strong>Тип:</strong> {aquarium.type}
-              </li>
-              <li>
-                <strong>Температура:</strong> {aquarium.temperature}°C
-              </li>
-              <li>
-                <strong>pH:</strong> {aquarium.ph}
-              </li>
-              <li>
-                <strong>Растения:</strong> {aquarium.plants.join(', ')}
-              </li>
-              <li>
-                <strong>Рыбы:</strong> {aquarium.fish.join(', ')}
-              </li>
-            </ul>
-          </div>
+          {/* Рыбки */}
+          {fishes.map((fish) => (
+            <div
+              key={`fish_${fish.id}`}
+              className={`${styles.fish} ${styles[fish.type]}`}
+              style={{
+                left: `${fish.x}px`,
+                top: `${fish.y}px`,
+                transform: `rotate(${fish.angle}rad)`,
+                transition: 'transform 0.3s ease-out',
+              }}
+              onClick={() => removeFish(fish.id)}
+            />
+          ))}
         </div>
       </div>
     </div>
