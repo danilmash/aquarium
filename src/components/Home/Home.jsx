@@ -11,7 +11,7 @@ const { tasks } = data;
 
 // Основной компонент приложения
 export const Home = () => {
-  const [level, setLevel] = useState(2);
+  const [level, setLevel] = useState(1);
 
   const [code, setCode] = useState('');
   const [aquarium, setAquarium] = useState({});
@@ -243,7 +243,7 @@ export const Home = () => {
         {/* Правая панель с визуализацией */}
         <div className="aquarium-panel">
           <h2 className="panel-title">Аквариум</h2>
-          <Aquarium propFish={fishes} type={aquarium.type} onRemoveFish={onRemoveFish} />
+          <Aquarium level={level} propFish={fishes} type={aquarium.type} onRemoveFish={onRemoveFish} />
 
           <div className="aquarium-params">
             <h3 className="params-title">Параметры аквариума:</h3>

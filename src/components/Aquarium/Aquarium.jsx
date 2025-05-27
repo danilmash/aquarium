@@ -5,7 +5,7 @@ import cn from 'classnames';
 import { Plant } from '../Plant';
 import { getRandomInteger } from '../../utils';
 
-export const Aquarium = ({ type, propFish, onRemoveFish }) => {
+export const Aquarium = ({ type, propFish, onRemoveFish,level }) => {
   const aquariumRef = useRef(null);
   const animationRef = useRef();
   const lastTimeRef = useRef(0);
@@ -143,6 +143,24 @@ export const Aquarium = ({ type, propFish, onRemoveFish }) => {
       return [...prevFishes, ...newFishes];
     });
   }, [propFish]);
+
+  useEffect(() => {
+   const container = aquariumRef.current?.getBoundingClientRect();
+    if(container && propFish.length === 1){
+
+    setFishes(() => propFish
+        .map((fish) => ({
+          type: fish.type,
+          id: fish.id,
+          x: Math.random() * container.width,
+          y: Math.random() * container.height,
+          speed: 0.5 + Math.random() * 2,
+          angle: Math.random() * Math.PI * 2,
+        }))
+    );
+    }
+ 
+  },[level])
 
   return (
     <div className={styles.wrapper}>
