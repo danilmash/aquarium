@@ -11,7 +11,7 @@ const { tasks } = data;
 
 // Основной компонент приложения
 export const Home = () => {
-  const [level, setLevel] = useState(1);
+  const [level, setLevel] = useState(2);
 
   const [code, setCode] = useState('');
   const [aquarium, setAquarium] = useState({});
@@ -36,6 +36,8 @@ export const Home = () => {
 
       // Создаем копию текущего аквариума
       const newAquarium = { ...aquarium };
+      // Очищаем массив рыб в аквариуме
+      newAquarium.fish = [];
 
       const newHistory = history.slice(0, historyIndex + 1);
       newHistory.push({ aquarium: { ...aquarium }, code, output });
@@ -58,7 +60,7 @@ export const Home = () => {
         },
         add_fish: (fish) => {
           newAquarium.fish.push(fish);
-          setFishes((prev) => [{ type: getFishType(fish), id: v4() }, ...prev]);
+          setFishes((prev) => [...prev, { type: getFishType(fish), id: v4() }]);
           return `Добавлена рыба: ${fish}`;
         },
         // удобнее удалять через нажатие на рыбку
@@ -117,6 +119,8 @@ export const Home = () => {
 
       // Обновляем аквариум
       setAquarium(newAquarium);
+      // Обновляем список рыбок в соответствии с аквариумом
+      setFishes(newAquarium.fish.map(fish => ({ type: getFishType(fish), id: v4() })));
 
       // Проверяем задание
       if (check(task, newAquarium)) {

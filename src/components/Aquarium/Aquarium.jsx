@@ -5,7 +5,7 @@ import cn from 'classnames';
 import { Plant } from '../Plant';
 import { getRandomInteger } from '../../utils';
 
-export const Aquarium = ({ type, propFish, onRemoveFish,level }) => {
+export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
   const aquariumRef = useRef(null);
   const animationRef = useRef();
   const lastTimeRef = useRef(0);
@@ -128,39 +128,15 @@ export const Aquarium = ({ type, propFish, onRemoveFish,level }) => {
     const container = aquariumRef.current?.getBoundingClientRect();
     if (!container || !propFish) return;
 
-    setFishes((prevFishes) => {
-      const newFishes = propFish
-        .filter((fish) => !prevFishes.find(({ id }) => fish.id === id))
-        .map((fish) => ({
-          type: fish.type,
-          id: fish.id,
-          x: Math.random() * container.width,
-          y: Math.random() * container.height,
-          speed: 0.5 + Math.random() * 2,
-          angle: Math.random() * Math.PI * 2,
-        }));
-
-      return [...prevFishes, ...newFishes];
-    });
+    setFishes(() => propFish.map((fish) => ({
+      type: fish.type,
+      id: fish.id,
+      x: Math.random() * container.width,
+      y: Math.random() * container.height,
+      speed: 0.5 + Math.random() * 2,
+      angle: Math.random() * Math.PI * 2,
+    })));
   }, [propFish]);
-
-  useEffect(() => {
-   const container = aquariumRef.current?.getBoundingClientRect();
-    if(container && propFish.length === 1){
-
-    setFishes(() => propFish
-        .map((fish) => ({
-          type: fish.type,
-          id: fish.id,
-          x: Math.random() * container.width,
-          y: Math.random() * container.height,
-          speed: 0.5 + Math.random() * 2,
-          angle: Math.random() * Math.PI * 2,
-        }))
-    );
-    }
- 
-  },[level])
 
   return (
     <div className={styles.wrapper}>
