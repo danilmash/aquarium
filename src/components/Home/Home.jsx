@@ -36,8 +36,10 @@ export const Home = () => {
 
       // Создаем копию текущего аквариума
       const newAquarium = { ...aquarium };
-      // Очищаем массив рыб в аквариуме
-      newAquarium.fish = [];
+      // Сохраняем начальную рыбку (сома)
+      const initialFish = newAquarium.fish.find(fish => fish === 'сом');
+      // Очищаем массив рыб в аквариуме, но сохраняем сома если он был
+      newAquarium.fish = initialFish ? [initialFish] : [];
 
       const newHistory = history.slice(0, historyIndex + 1);
       newHistory.push({ aquarium: { ...aquarium }, code, output });
@@ -119,8 +121,9 @@ export const Home = () => {
 
       // Обновляем аквариум
       setAquarium(newAquarium);
-      // Обновляем список рыбок в соответствии с аквариумом
-      setFishes(newAquarium.fish.map(fish => ({ type: getFishType(fish), id: v4() })));
+      // Обновляем список рыбок, сохраняя начальную рыбку
+      const fishesToSet = newAquarium.fish.map(fish => ({ type: getFishType(fish), id: v4() }));
+      setFishes(fishesToSet);
 
       // Проверяем задание
       if (check(task, newAquarium)) {

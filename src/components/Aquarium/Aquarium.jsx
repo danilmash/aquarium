@@ -4,6 +4,7 @@ import { Bubble } from '../Bubble';
 import cn from 'classnames';
 import { Plant } from '../Plant';
 import { getRandomInteger } from '../../utils';
+import { Fish } from '../Fish/Fish';
 
 export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
   const aquariumRef = useRef(null);
@@ -128,14 +129,33 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
     const container = aquariumRef.current?.getBoundingClientRect();
     if (!container || !propFish) return;
 
-    setFishes(() => propFish.map((fish) => ({
-      type: fish.type,
-      id: fish.id,
-      x: Math.random() * container.width,
-      y: Math.random() * container.height,
-      speed: 0.5 + Math.random() * 2,
-      angle: Math.random() * Math.PI * 2,
-    })));
+    setFishes(() => {
+      // Находим сома (он всегда должен быть)
+      const defaultFish = propFish.find(fish => fish.type === 'som');
+      // Остальные рыбки
+      const otherFish = propFish.filter(fish => fish.type !== 'som');
+
+      return [
+        // Если есть сом, добавляем его первым
+        ...(defaultFish ? [{
+          type: defaultFish.type,
+          id: defaultFish.id,
+          x: Math.random() * container.width,
+          y: Math.random() * container.height,
+          speed: 0.5 + Math.random() * 2,
+          angle: Math.random() * Math.PI * 2,
+        }] : []),
+        // Добавляем остальных рыбок
+        ...otherFish.map((fish) => ({
+          type: fish.type,
+          id: fish.id,
+          x: Math.random() * container.width,
+          y: Math.random() * container.height,
+          speed: 0.5 + Math.random() * 2,
+          angle: Math.random() * Math.PI * 2,
+        }))
+      ];
+    });
   }, [propFish]);
 
   return (
@@ -153,16 +173,10 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
 
           {/* Рыбки */}
           {fishes.map((fish) => (
-            <div
+            <Fish
               key={`fish_${fish.id}`}
-              className={`${styles.fish} ${styles[fish.type]}`}
-              style={{
-                left: `${fish.x}px`,
-                top: `${fish.y}px`,
-                transform: `rotate(${fish.angle}rad)`,
-                transition: 'transform 0.3s ease-out',
-              }}
-              onClick={() => removeFish(fish.id)}
+              fish={fish}
+              onRemove={removeFish}
             />
           ))}
         </div>
