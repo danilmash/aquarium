@@ -3,7 +3,6 @@
 $aqua-blue: #0a3d6b;
 $water-blue: #1a6bb0;
 
-
 .wrapper {
     display: flex;
     align-items: center;
@@ -21,8 +20,6 @@ $water-blue: #1a6bb0;
     overflow: hidden;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
 }
-
-
 
 .water {
     width: 100%;
@@ -83,12 +80,17 @@ $water-blue: #1a6bb0;
     border-radius: 50% 60% 50% 50%;
     z-index: 2;
     cursor: pointer;
-    transition: transform 0.3s ease-out;
+    transition: all 0.3s ease-out;
     filter: brightness(1) saturate(1.2);
     will-change: transform;
     transform-origin: center;
     margin-left: -15px;
     margin-top: -9px;
+
+    &.eaten {
+        animation: wobble 1s ease-in-out forwards;
+        pointer-events: none;
+    }
 
     &::after {
         content: '';
@@ -100,7 +102,6 @@ $water-blue: #1a6bb0;
         left: -6px;
         transform: rotate(180deg);
     }
-
 
     &::before {
         content: '';
@@ -124,14 +125,11 @@ $water-blue: #1a6bb0;
 
     &.som {
         background: linear-gradient(to right, #978f88, #938e88);
-
         box-shadow: 7px -7px 0 -4px #555453, 8px 7px 0 -4px #555453;
 
         &::after {
             background: linear-gradient(to right, #676564, #555453);
         }
-
-
     }
 
     &.goldfish {
@@ -184,5 +182,32 @@ $water-blue: #1a6bb0;
             height: 10px;
             background: linear-gradient(to right, #a58faa, #8c6d93);
         }
+    }
+}
+
+@keyframes wobble {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    25% {
+        transform: translate(-50%, -50%) rotate(-15deg) scale(0.9);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) rotate(10deg) scale(0.8);
+        opacity: 0.6;
+    }
+
+    75% {
+        transform: translate(-50%, -50%) rotate(-5deg) scale(0.7);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(0.5);
+        opacity: 0;
     }
 }

@@ -6,8 +6,18 @@ import data from '../../data/tasks.json';
 import { compatibilityMap } from '../../data/fishes.json';
 import { FishSelect, Loader } from '..';
 import { Aquarium } from '../Aquarium';
+import { fishesMap } from '../../utils/getFishType';
 
 const { tasks } = data;
+
+// Функция для получения русского названия рыбы по внутреннему типу
+const getRussianFishName = (type) => {
+  const reverseMap = Object.entries(fishesMap).reduce((acc, [key, value]) => {
+    acc[value] = key;
+    return acc;
+  }, {});
+  return reverseMap[type] || type;
+};
 
 // Основной компонент приложения
 export const Home = () => {
@@ -25,7 +35,24 @@ export const Home = () => {
   const [historyIndex, setHistoryIndex] = useState(-1); // Текущий индекс в истории
 
   const onRemoveFish = useCallback((id) => {
-    setFishes((prev) => prev.filter((item) => item.id !== id));
+    setFishes((prev) => {
+      const updatedFishes = prev.filter((item) => item.id !== id);
+      // Обновляем параметры аквариума при удалении рыбки
+      const removedFish = prev.find(fish => fish.id === id);
+      if (removedFish) {
+        setAquarium(prevAquarium => {
+          const russianFishName = getRussianFishName(removedFish.type);
+          const updatedFish = prevAquarium.fish.filter(
+            fishName => fishName !== russianFishName
+          );
+          return {
+            ...prevAquarium,
+            fish: updatedFish
+          };
+        });
+      }
+      return updatedFishes;
+    });
   }, []);
 
   // Функция для выполнения Python кода

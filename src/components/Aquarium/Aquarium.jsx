@@ -5,11 +5,16 @@ import cn from 'classnames';
 import { Plant } from '../Plant';
 import { getRandomInteger } from '../../utils';
 import { Fish } from '../Fish/Fish';
+import { canEatFish } from '../../data/predators';
 
 export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
   const aquariumRef = useRef(null);
   const animationRef = useRef();
   const lastTimeRef = useRef(0);
+  const fishPositionsRef = useRef(new Map());
+  const lastAttackTimeRef = useRef(0);
+  const ATTACK_COOLDOWN = 3000;
+  const ATTACK_DISTANCE = 50;
 
   const [fishes, setFishes] = useState([]);
 
@@ -39,37 +44,6 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
     }
   }, []);
 
-  // Добавление новой рыбки
-  const addFish = useCallback(
-    (type) => {
-      const container = aquariumRef.current?.getBoundingClientRect();
-      if (!container) return;
-
-      const newFish = {
-        type,
-        x: Math.random() * container.width,
-        y: Math.random() * container.height,
-        speed: 0.5 + Math.random() * 2,
-        angle: Math.random() * Math.PI * 2,
-      };
-      setFishes((prev) => {
-        const newFishes = [...prev, newFish];
-        // Если это первая рыбка, запускаем анимацию
-        if (newFishes.length === 1) {
-          startAnimation();
-        }
-        return newFishes;
-      });
-    },
-    [startAnimation],
-  );
-
-  // Удаление рыбки
-  const removeFish = (id) => {
-    setFishes((prev) => prev.filter((fish) => fish.id !== id));
-    onRemoveFish(id);
-  };
-
   // Анимация движения рыбок
   const animate = (time) => {
     if (!lastTimeRef.current) lastTimeRef.current = time;
@@ -80,7 +54,14 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
       const container = aquariumRef.current?.getBoundingClientRect();
       if (!container) return prevFishes;
 
-      return prevFishes.map((fish) => {
+      const newPositions = new Map();
+      const updatedFishes = prevFishes.map((fish) => {
+        // Если рыбка помечена как съеденная, не обновляем её позицию
+        if (fish.isBeingEaten) {
+          newPositions.set(fish.id, { x: fish.x, y: fish.y, angle: fish.angle });
+          return fish;
+        }
+
         // Плавное изменение направления
         const angleChange = (Math.random() - 0.5) * 0.1;
         let newAngle = fish.angle + angleChange;
@@ -103,24 +84,102 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
           newY = Math.max(0, Math.min(container.height, newY));
         }
 
+        const newPosition = { x: newX, y: newY, angle: newAngle };
+        newPositions.set(fish.id, newPosition);
+
         return {
           ...fish,
-          x: newX,
-          y: newY,
-          angle: newAngle,
+          ...newPosition
         };
       });
+
+      fishPositionsRef.current = newPositions;
+      return updatedFishes;
     });
 
     animationRef.current = requestAnimationFrame(animate);
   };
+
+  // Проверка хищников
+  useEffect(() => {
+    const checkPredators = () => {
+      const currentTime = Date.now();
+      if (currentTime - lastAttackTimeRef.current < ATTACK_COOLDOWN) {
+        return;
+      }
+
+      const newFishesToRemove = new Set();
+
+      setFishes(prevFishes => {
+        const positions = fishPositionsRef.current;
+        let attackHappened = false;
+
+        const updatedFishes = prevFishes.map(fish => {
+          if (fish.isBeingEaten || attackHappened) return fish;
+
+          if (!newFishesToRemove.has(fish.id)) {
+            for (const predator of prevFishes) {
+              if (predator.id === fish.id || predator.isBeingEaten || newFishesToRemove.has(predator.id)) continue;
+
+              const predatorPos = positions.get(predator.id);
+              const preyPos = positions.get(fish.id);
+
+              if (predatorPos && preyPos) {
+                const distance = Math.sqrt(
+                  Math.pow(predatorPos.x - preyPos.x, 2) +
+                  Math.pow(predatorPos.y - preyPos.y, 2)
+                );
+
+                if (distance < ATTACK_DISTANCE && canEatFish(predator, fish)) {
+                  console.log(`Хищник ${predator.type} охотится на ${fish.type}`);
+                  newFishesToRemove.add(fish.id);
+                  attackHappened = true;
+                  lastAttackTimeRef.current = currentTime;
+                  return { ...fish, isBeingEaten: true };
+                }
+              }
+            }
+          }
+          return fish;
+        });
+
+        return updatedFishes;
+      });
+
+      if (newFishesToRemove.size > 0) {
+        setTimeout(() => {
+          newFishesToRemove.forEach(id => {
+            onRemoveFish(id);
+            const container = aquariumRef.current?.getBoundingClientRect();
+            if (container) {
+              setFishes(prevFishes => {
+                const remainingFishes = prevFishes.filter(fish => fish.id !== id);
+                const newPositions = new Map();
+                remainingFishes.forEach(fish => {
+                  newPositions.set(fish.id, {
+                    x: fish.x,
+                    y: fish.y,
+                    angle: fish.angle
+                  });
+                });
+                fishPositionsRef.current = newPositions;
+                return remainingFishes;
+              });
+            }
+          });
+        }, 1000);
+      }
+    };
+
+    const predatorInterval = setInterval(checkPredators, 1000);
+    return () => clearInterval(predatorInterval);
+  }, [onRemoveFish]);
 
   useEffect(() => {
     if (!animationRef.current) {
       startAnimation();
     }
     return () => {
-      // Очистка при размонтировании компонента
       stopAnimation();
     };
   }, [startAnimation, stopAnimation]);
@@ -129,34 +188,38 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
     const container = aquariumRef.current?.getBoundingClientRect();
     if (!container || !propFish) return;
 
-    setFishes(() => {
-      // Находим сома (он всегда должен быть)
-      const defaultFish = propFish.find(fish => fish.type === 'som');
-      // Остальные рыбки
-      const otherFish = propFish.filter(fish => fish.type !== 'som');
+    const newFishes = propFish.map((fish) => {
+      const position = {
+        x: Math.random() * container.width,
+        y: Math.random() * container.height,
+        angle: Math.random() * Math.PI * 2,
+      };
 
-      return [
-        // Если есть сом, добавляем его первым
-        ...(defaultFish ? [{
-          type: defaultFish.type,
-          id: defaultFish.id,
-          x: Math.random() * container.width,
-          y: Math.random() * container.height,
-          speed: 0.5 + Math.random() * 2,
-          angle: Math.random() * Math.PI * 2,
-        }] : []),
-        // Добавляем остальных рыбок
-        ...otherFish.map((fish) => ({
-          type: fish.type,
-          id: fish.id,
-          x: Math.random() * container.width,
-          y: Math.random() * container.height,
-          speed: 0.5 + Math.random() * 2,
-          angle: Math.random() * Math.PI * 2,
-        }))
-      ];
+      const newFish = {
+        type: fish.type,
+        id: fish.id,
+        speed: 0.5 + Math.random() * 2,
+        isBeingEaten: false,
+        ...position
+      };
+
+      fishPositionsRef.current.set(fish.id, position);
+      return newFish;
     });
+
+    setFishes(newFishes);
   }, [propFish]);
+
+  const memoizedFishes = useMemo(() =>
+    fishes.map((fish) => (
+      <Fish
+        key={fish.id}
+        fish={fish}
+        onRemove={onRemoveFish}
+      />
+    )),
+    [fishes, onRemoveFish]
+  );
 
   return (
     <div className={styles.wrapper}>
@@ -166,19 +229,9 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
             [styles['water--black']]: type === 'тёмный',
           })}
         >
-          {/* растения */}
           {Plants}
-          {/* пузырьки */}
           {Bubbles}
-
-          {/* Рыбки */}
-          {fishes.map((fish) => (
-            <Fish
-              key={`fish_${fish.id}`}
-              fish={fish}
-              onRemove={removeFish}
-            />
-          ))}
+          {memoizedFishes}
         </div>
       </div>
     </div>
