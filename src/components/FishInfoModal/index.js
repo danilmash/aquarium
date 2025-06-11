@@ -1,0 +1,1 @@
+export { FishInfoModal } from './FishInfoModal';

@@ -1,11 +1,17 @@
 export const fishesMap = {
-  сом: 'som',
+  сом: 'catfish',
   клоун: 'clown',
-  гурами: 'neon',
+  гурами: 'gourami',
   гуппи: 'guppy',
-  цихлида: 'catfish',
-  данио: 'angelfish',
+  цихлида: 'cichlid',
+  данио: 'danio',
   'золотая рыбка': 'goldfish',
+  скалярия: 'angelfish',
+  барбус: 'barbus',
+  меченосец: 'swordtail',
+  тетра: 'tetra',
+  петушок: 'betta',
+  дискус: 'discus'
 };
 
 export const getFishType = (type) => fishesMap[type];

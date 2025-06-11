@@ -4,23 +4,35 @@ import fishes from './fishes.json';
 // Конфигурация хищников и их жертв
 export const predatorConfig = {
     // Хищные рыбы и их жертвы
-    som: {
+    catfish: {
         isPredator: true,
-        canEat: ['guppy', 'angelfish', 'clown'],
+        canEat: ['guppy', 'tetra', 'danio'],
         predatorAttackChance: 0.25,
-        compatibleWith: ['som', 'catfish'] // добавляем совместимость с другими хищниками
+        compatibleWith: ['cichlid', 'catfish']
     },
-    catfish: {  // цихлида
+    cichlid: {
         isPredator: true,
-        canEat: ['guppy', 'angelfish', 'clown'],
+        canEat: ['guppy', 'tetra', 'danio'],
         predatorAttackChance: 0.3,
-        compatibleWith: ['som', 'catfish'] // добавляем совместимость с другими хищниками
+        compatibleWith: ['catfish', 'cichlid']
+    },
+    betta: {
+        isPredator: true,
+        canEat: ['guppy', 'tetra'],
+        predatorAttackChance: 0.2,
+        compatibleWith: ['catfish', 'cichlid']
+    },
+    angelfish: {
+        isPredator: true,
+        canEat: ['guppy', 'tetra'],
+        predatorAttackChance: 0.15,
+        compatibleWith: ['discus', 'catfish']
     },
     // Мирные рыбы
     guppy: {
         isPredator: false,
     },
-    angelfish: {  // данио
+    danio: {
         isPredator: false,
     },
     clown: {
@@ -29,7 +41,19 @@ export const predatorConfig = {
     goldfish: {
         isPredator: false,
     },
-    neon: {  // гурами
+    gourami: {
+        isPredator: false,
+    },
+    barbus: {
+        isPredator: false,
+    },
+    swordtail: {
+        isPredator: false,
+    },
+    tetra: {
+        isPredator: false,
+    },
+    discus: {
         isPredator: false,
     }
 };

@@ -6,8 +6,10 @@ import { Plant } from '../Plant';
 import { getRandomInteger } from '../../utils';
 import { Fish } from '../Fish/Fish';
 import { canEatFish } from '../../data/predators';
+import { FishInfoModal } from '../FishInfoModal';
 
 export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const aquariumRef = useRef(null);
   const animationRef = useRef();
   const lastTimeRef = useRef(0);
@@ -224,16 +226,32 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.container} ref={aquariumRef}>
-        <div
-          className={cn(styles.water, {
-            [styles['water--black']]: type === 'тёмный',
-          })}
-        >
+        <div className={cn(styles.water, { [styles['water--black']]: type === 'black' })}>
           {Plants}
           {Bubbles}
-          {memoizedFishes}
+          {fishes.map((fish) => (
+            <Fish
+              key={fish.id}
+              fish={fish}
+              onRemove={onRemoveFish}
+            />
+          ))}
+          <button
+            className={styles.infoButton}
+            onClick={() => setIsModalOpen(true)}
+            title="Информация о рыбах"
+          >
+            i
+          </button>
+        </div>
+        <div className={styles.controls}>
+          {/* ... existing controls ... */}
         </div>
       </div>
+      <FishInfoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
