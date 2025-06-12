@@ -2,17 +2,434 @@
   "tasks": [
     {
       "id": 1,
-      "title": "Создаем среду для сома",
-      "description": "Сом требует особых условий. Напиши код, который настроит правильный аквариум для сома.",
-      "hint": "Помни, что сомы любят низкую освещенность, pH около 6.5-7.5 и температуру 22-26°C.",
-      "initialCode": "// Доступные функции:\n// setAquariumType(тип) - установить тип аквариума\n// addPlant(растение) - добавить растение\n// removePlant(растение) - удалить растение\n// addFish(рыба) - добавить рыбу\n// setTemperature(градусы) - установить температуру\n// setPH(уровень) - установить pH\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "title": "Первые шаги в аквариумистике",
+      "description": "Создай свой первый аквариум. Начни с базовых настроек: установи температуру 24°C и pH 7.0.",
+      "hint": "Используй функции setTemperature() и setPH()",
+      "initialCode": "// Доступные функции:\n// setTemperature(градусы) - установить температуру\n// setPH(уровень) - установить pH\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
       "validation": {
-        "type": {
-          "includesString": "тёмный"
+        "temperature": {
+          "exact": 24
         },
+        "ph": {
+          "exact": 7.0
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": null,
+        "ph": null
+      }
+    },
+    {
+      "id": 2,
+      "title": "Добавляем растения",
+      "description": "Добавь в аквариум 2 водоросли и 1 роголистник. Растения помогут создать естественную среду.",
+      "hint": "Используй функцию addPlant(тип, количество)",
+      "initialCode": "// Доступные функции:\n// addPlant(тип, количество) - добавить растения\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "plants": {
+          "exactCount": 3,
+          "includes": [
+            "водоросли",
+            "роголистник"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 3,
+      "title": "Первые обитатели",
+      "description": "Добавь в аквариум сома и двух гуппи. Проверь их совместимость перед добавлением.",
+      "hint": "Используй функции addFish() и checkCompatibility()",
+      "initialCode": "// Доступные функции:\n// addFish(рыба) - добавить рыбу\n// checkCompatibility(рыба1, рыба2) - проверить совместимость\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "fish": {
+          "exactCount": 3,
+          "includes": [
+            "сом",
+            "гуппи"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": true,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [
+          "водоросли",
+          "водоросли",
+          "роголистник"
+        ],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 4,
+      "title": "Настройка освещения",
+      "description": "Установи оптимальное освещение для растений (70%) и добавь элодею.",
+      "hint": "Используй функции setLight() и addPlant()",
+      "initialCode": "// Доступные функции:\n// setLight(интенсивность) - установить яркость света (0-100%)\n// addPlant(тип, количество) - добавить растения\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "lightIntensity": {
+          "exact": 70
+        },
+        "plants": {
+          "includes": [
+            "элодея"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [
+          "водоросли",
+          "водоросли",
+          "роголистник"
+        ],
+        "fish": [
+          "сом",
+          "гуппи",
+          "гуппи"
+        ],
+        "temperature": 24,
+        "ph": 7.0,
+        "lightIntensity": 50
+      }
+    },
+    {
+      "id": 5,
+      "title": "Параметры воды",
+      "description": "Настрой оптимальные параметры воды: жесткость 6°dH, карбонатная жесткость 4°dKH, нитраты 10 мг/л.",
+      "hint": "Используй функции setHardness(), setCarbonateHardness() и setNitrateLevel()",
+      "initialCode": "// Доступные функции:\n// setHardness(уровень) - установить жесткость\n// setCarbonateHardness(уровень) - установить KH\n// setNitrateLevel(уровень) - установить нитраты\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "hardness": {
+          "exact": 6
+        },
+        "kh": {
+          "exact": 4
+        },
+        "nitrateLevel": {
+          "exact": 10
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [
+          "водоросли",
+          "водоросли",
+          "роголистник",
+          "элодея"
+        ],
+        "fish": [
+          "сом",
+          "гуппи",
+          "гуппи"
+        ],
+        "temperature": 24,
+        "ph": 7.0,
+        "lightIntensity": 70
+      }
+    },
+    {
+      "id": 6,
+      "title": "Создаем травник",
+      "description": "Преврати аквариум в травник. Добавь питательный грунт, установи яркое освещение и добавь разнообразные растения.",
+      "hint": "Используй setSubstrate(), setLight() и addPlant()",
+      "initialCode": "// Доступные функции:\n// setSubstrate(тип, глубина) - установить грунт\n// setLight(интенсивность) - установить освещение\n// addPlant(тип, количество) - добавить растения\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "substrate": {
+          "type": "питательный",
+          "depth": 5
+        },
+        "lightIntensity": {
+          "min": 80
+        },
+        "plants": {
+          "minCount": 5,
+          "includes": [
+            "водоросли",
+            "роголистник",
+            "элодея",
+            "людвигия",
+            "валлиснерия"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 7,
+      "title": "Аквариум для цихлид",
+      "description": "Создай аквариум для цихлид. Установи высокую температуру, добавь камни и проверь совместимость рыб.",
+      "hint": "Используй setTemperature(), addDecoration() и checkCompatibility()",
+      "initialCode": "// Доступные функции:\n// setTemperature(градусы) - установить температуру\n// addDecoration(тип) - добавить декор\n// addFish(рыба) - добавить рыбу\n// checkCompatibility(рыба1, рыба2) - проверить совместимость\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "temperature": {
+          "min": 26
+        },
+        "decorations": {
+          "includes": [
+            "камни",
+            "грот"
+          ]
+        },
+        "fish": {
+          "includes": [
+            "цихлида"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": true,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 8,
+      "title": "Аквариум с CO2",
+      "description": "Создай аквариум с системой CO2. Добавь питательный грунт, яркое освещение и удобрения для растений.",
+      "hint": "Используй setSubstrate(), setLight() и fertilizePlants()",
+      "initialCode": "// Доступные функции:\n// setSubstrate(тип, глубина) - установить грунт\n// setLight(интенсивность) - установить освещение\n// fertilizePlants(тип) - добавить удобрения\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "substrate": {
+          "type": "питательный"
+        },
+        "lightIntensity": {
+          "min": 80
+        },
+        "fertilizer": {
+          "includes": "комплексный"
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 9,
+      "title": "Аквариум для дискусов",
+      "description": "Создай идеальные условия для дискусов: высокая температура, мягкая вода и подходящие соседи.",
+      "hint": "Используй setTemperature(), setHardness() и addFish()",
+      "initialCode": "// Доступные функции:\n// setTemperature(градусы) - установить температуру\n// setHardness(уровень) - установить жесткость\n// addFish(рыба) - добавить рыбу\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "temperature": {
+          "min": 28
+        },
+        "hardness": {
+          "max": 4
+        },
+        "fish": {
+          "includes": [
+            "дискус"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": true,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 10,
+      "title": "Аквариум с креветками",
+      "description": "Создай аквариум для креветок. Добавь растения, установи низкую жесткость и проверь совместимость с рыбами.",
+      "hint": "Используй addPlant(), setHardness() и checkCompatibility()",
+      "initialCode": "// Доступные функции:\n// addPlant(тип, количество) - добавить растения\n// setHardness(уровень) - установить жесткость\n// addFish(рыба) - добавить рыбу\n// checkCompatibility(рыба1, рыба2) - проверить совместимость\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "hardness": {
+          "max": 6
+        },
+        "plants": {
+          "minCount": 3
+        },
+        "fish": {
+          "excludes": [
+            "цихлида",
+            "дискус"
+          ]
+        }
+      },
+      "isValid": false,
+      "fishSelect": true,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 11,
+      "title": "Аквариум с корягами",
+      "description": "Создай аквариум с корягами. Добавь подходящий грунт, растения и рыб, которые любят кислую воду.",
+      "hint": "Используй addDecoration(), setSubstrate() и addFish()",
+      "initialCode": "// Доступные функции:\n// addDecoration(тип) - добавить декор\n// setSubstrate(тип, глубина) - установить грунт\n// addFish(рыба) - добавить рыбу\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "decorations": {
+          "includes": [
+            "коряги"
+          ]
+        },
+        "substrate": {
+          "type": "питательный"
+        },
+        "ph": {
+          "max": 6.5
+        }
+      },
+      "isValid": false,
+      "fishSelect": true,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 12,
+      "title": "Аквариум с фильтрацией",
+      "description": "Настрой правильную фильтрацию. Добавь внешний и внутренний фильтры, установи подходящий поток воды.",
+      "hint": "Используй addFilter() и setOxygenLevel()",
+      "initialCode": "// Доступные функции:\n// addFilter(тип) - добавить фильтр\n// setOxygenLevel(уровень) - установить кислород\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "filters": {
+          "includes": [
+            "внешний",
+            "внутренний"
+          ]
+        },
+        "oxygenLevel": {
+          "min": 6
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 13,
+      "title": "Аквариум с кормлением",
+      "description": "Настрой правильное кормление рыб. Добавь разные типы корма и установи расписание кормления.",
+      "hint": "Используй addFood() и setFeedingSchedule()",
+      "initialCode": "// Доступные функции:\n// addFood(тип, количество) - добавить корм\n// setFeedingSchedule(время) - установить расписание\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "feeding": {
+          "minCount": 2
+        },
+        "feedingSchedule": {
+          "minCount": 2
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [
+          "сом",
+          "гуппи",
+          "гуппи"
+        ],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 14,
+      "title": "Аквариум с разными зонами",
+      "description": "Создай аквариум с разными зонами для рыб. Добавь растения разной высоты и декорации для создания укрытий.",
+      "hint": "Используй addPlant(), addDecoration() и setSubstrate()",
+      "initialCode": "// Доступные функции:\n// addPlant(тип, количество) - добавить растения\n// addDecoration(тип) - добавить декор\n// setSubstrate(тип, глубина) - установить грунт\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
+        "plants": {
+          "minCount": 4,
+          "includes": [
+            "валлиснерия",
+            "людвигия"
+          ]
+        },
+        "decorations": {
+          "minCount": 2
+        },
+        "substrate": {
+          "depth": {
+            "min": 3
+          }
+        }
+      },
+      "isValid": false,
+      "fishSelect": false,
+      "aquarium": {
+        "type": "стандартный",
+        "plants": [],
+        "fish": [],
+        "temperature": 24,
+        "ph": 7.0
+      }
+    },
+    {
+      "id": 15,
+      "title": "Профессиональный аквариум",
+      "description": "Создай профессиональный аквариум со всеми необходимыми параметрами. Используй все доступные функции для создания идеальной среды.",
+      "hint": "Используй все доступные функции для создания сбалансированного аквариума",
+      "initialCode": "// Используй все доступные функции для создания идеального аквариума\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
+      "validation": {
         "temperature": {
           "range": {
-            "min": 22,
+            "min": 24,
             "max": 26
           }
         },
@@ -21,106 +438,46 @@
             "min": 6.5,
             "max": 7.5
           }
-        }
-      },
-      "isValid": false,
-      "fishSelect": false,
-      "aquarium": {
-        "type": "стандартный",
-        "plants": [
-          "водоросли"
-        ],
-        "fish": [
-          "сом"
-        ],
-        "temperature": 22,
-        "ph": 6.0,
-        "size": "средний"
-      }
-    },
-    {
-      "id": 2,
-      "title": "Подбираем соседей для сома",
-      "description": "Добавь в аквариум рыб, которые могут мирно сосуществовать с сомом.",
-      "hint": "Сомы хорошо уживаются с гурами, данио и спокойными цихлидами.",
-      "initialCode": "// Сом уже добавлен в аквариум\n// Доступные функции:\n// addFish(рыба) - добавить рыбу\n// checkCompatibility(рыба1, рыба2) - проверить совместимость\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:\n",
-      "validation": {
-        "fish": {
-          "includesArray": {
-            "values": [
-              "гурами",
-              "данио",
-              "цихлида"
-            ],
-            "exclude": "сом"
+        },
+        "hardness": {
+          "range": {
+            "min": 4,
+            "max": 8
           }
+        },
+        "kh": {
+          "range": {
+            "min": 3,
+            "max": 6
+          }
+        },
+        "nitrateLevel": {
+          "max": 20
+        },
+        "lightIntensity": {
+          "min": 70
+        },
+        "plants": {
+          "minCount": 5
+        },
+        "fish": {
+          "minCount": 3
+        },
+        "filters": {
+          "minCount": 1
+        },
+        "decorations": {
+          "minCount": 2
         }
       },
       "isValid": false,
       "fishSelect": true,
       "aquarium": {
-        "type": "тёмный",
-        "plants": [
-          "водоросли"
-        ],
-        "fish": [
-          "сом"
-        ],
-        "temperature": 24,
-        "ph": 7.0,
-        "size": "средний"
-      }
-    },
-    {
-      "id": 3,
-      "title": "Создаем растительный аквариум",
-      "description": "Создай идеальные условия для растительного аквариума с различными видами растений.",
-      "hint": "Растениям нужен хороший свет, CO2 и удобрения. Не забудь про правильный грунт!",
-      "initialCode": "// Доступные функции:\n// setLight(интенсивность) - установить яркость света (0-100%)\n// setSubstrate(тип, глубина) - установить грунт\n// addPlant(растение) - добавить растение\n// fertilizePlants(тип) - внести удобрения\n// setCarbonateHardness(уровень) - установить KH\n// setNitrateLevel(уровень) - установить уровень нитратов\n// console.log(сообщение) - вывести сообщение\n\n// Твой код:",
-      "validation": {
-        "lightIntensity": {
-          "range": {
-            "min": 70,
-            "max": 100
-          }
-        },
-        "substrate": {
-          "type": "питательный"
-        },
-        "plants": {
-          "minCount": 3
-        },
-        "fertilizer": {
-          "includesString": "комплексный"
-        },
-        "kh": {
-          "range": {
-            "min": 3,
-            "max": 8
-          }
-        },
-        "nitrateLevel": {
-          "range": {
-            "min": 5,
-            "max": 20
-          }
-        }
-      },
-      "isValid": false,
-      "fishSelect": false,
-      "aquarium": {
-        "type": "открытый",
+        "type": "стандартный",
         "plants": [],
         "fish": [],
         "temperature": 24,
-        "ph": 7.0,
-        "lightIntensity": 50,
-        "substrate": {
-          "type": "обычный",
-          "depth": 2
-        },
-        "kh": 2,
-        "nitrateLevel": 0
+        "ph": 7.0
       }
     }
   ]
