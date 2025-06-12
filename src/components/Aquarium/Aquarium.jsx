@@ -8,7 +8,27 @@ import { Fish } from '../Fish/Fish';
 import { canEatFish } from '../../data/predators';
 import { FishInfoModal } from '../FishInfoModal';
 
-export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
+export const Aquarium = ({
+  type,
+  propFish,
+  onRemoveFish,
+  level,
+  // Новые параметры
+  oxygenLevel,
+  hardness,
+  kh,
+  nitrateLevel,
+  lightIntensity,
+  decorations = [],
+  filters = [],
+  substrate,
+  feeding = [],
+  feedingSchedule = [],
+  plantingZones = {},
+  fertilizer,
+  size = {},
+  shape
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const aquariumRef = useRef(null);
   const animationRef = useRef();
@@ -223,19 +243,89 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
     [fishes, onRemoveFish]
   );
 
+  // Эффект для изменения внешнего вида в зависимости от параметров
+  useEffect(() => {
+    const container = aquariumRef.current;
+    if (!container) return;
+
+    // Применяем освещение (по умолчанию 100%)
+    container.style.filter = `brightness(${lightIntensity === null ? 100 : lightIntensity}%)`;
+
+    // Применяем цвет воды в зависимости от параметров
+    const waterElement = container.querySelector(`.${styles.water}`);
+    if (waterElement) {
+      // Изменяем цвет воды в зависимости от параметров
+      let waterColor = '#1a6bb0'; // базовый цвет
+
+      // Мутность от нитратов (если есть)
+      if (nitrateLevel !== null && nitrateLevel > 40) {
+        waterColor = '#1a5580';
+      }
+
+      // Жесткость влияет на прозрачность (если установлена)
+      const opacity = hardness === null ? 0.9 : Math.max(0.6, Math.min(1, 0.6 + hardness / 100));
+
+      waterElement.style.background = `linear-gradient(to bottom, ${waterColor}88, ${waterColor})`;
+      waterElement.style.opacity = opacity;
+    }
+  }, [oxygenLevel, hardness, kh, nitrateLevel, lightIntensity]);
+
   return (
     <div className={styles.wrapper}>
-      <div className={styles.container} ref={aquariumRef}>
-        <div className={cn(styles.water, { [styles['water--black']]: type === 'black' })}>
+      <div
+        className={cn(styles.container, {
+          [styles.dark]: type === 'тёмный',
+          [styles.planted]: type === 'травник',
+          [styles[`shape-${shape}`]]: shape && shape !== 'стандартный'
+        })}
+        ref={aquariumRef}
+        style={{
+          width: size?.length ? `${size.length}px` : undefined,
+          height: size?.height ? `${size.height}px` : undefined
+        }}
+      >
+        <div className={cn(styles.water, { [styles['water--black']]: type === 'тёмный' })}>
+          {/* Грунт */}
+          {substrate && (
+            <div
+              className={styles.substrate}
+              style={{
+                height: `${substrate.depth * 10}px`,
+                background: substrate.type === 'питательный' ? '#3d2b1f' : '#c2b280'
+              }}
+            />
+          )}
+
+          {/* Декорации */}
+          {decorations?.map((decor, index) => (
+            <div key={index} className={cn(styles.decoration, styles[`decoration-${decor}`])} />
+          ))}
+
+          {/* Растения по зонам */}
+          {Object.entries(plantingZones || {}).map(([zone, plant]) => (
+            <div key={zone} className={cn(styles.plantingZone, styles[`zone-${zone}`])}>
+              <Plant type={plant} />
+            </div>
+          ))}
+
           {Plants}
           {Bubbles}
-          {fishes.map((fish) => (
-            <Fish
-              key={fish.id}
-              fish={fish}
-              onRemove={onRemoveFish}
-            />
+          {memoizedFishes}
+
+          {/* Фильтры */}
+          {filters?.map((filter, index) => (
+            <div key={index} className={cn(styles.filter, styles[`filter-${filter}`])}>
+              <div className={styles.filterBubbles} />
+            </div>
           ))}
+
+          {/* Кормушка */}
+          {feedingSchedule?.length > 0 && (
+            <div className={styles.feeder}>
+              <div className={styles.feederContainer} />
+            </div>
+          )}
+
           <button
             className={styles.infoButton}
             onClick={() => setIsModalOpen(true)}
@@ -244,8 +334,25 @@ export const Aquarium = ({ type, propFish, onRemoveFish, level }) => {
             i
           </button>
         </div>
-        <div className={styles.controls}>
-          {/* ... existing controls ... */}
+
+        {/* Панель параметров */}
+        <div className={styles.parameters}>
+          <div className={styles.parameterItem}>
+            <span>O₂</span>
+            <div className={styles.parameterValue}>{typeof oxygenLevel === 'number' && !isNaN(oxygenLevel) ? `${oxygenLevel} мг/л` : '-'}</div>
+          </div>
+          <div className={styles.parameterItem}>
+            <span>GH</span>
+            <div className={styles.parameterValue}>{typeof hardness === 'number' && !isNaN(hardness) ? `${hardness}°` : '-'}</div>
+          </div>
+          <div className={styles.parameterItem}>
+            <span>KH</span>
+            <div className={styles.parameterValue}>{typeof kh === 'number' && !isNaN(kh) ? `${kh}°` : '-'}</div>
+          </div>
+          <div className={styles.parameterItem}>
+            <span>NO₃</span>
+            <div className={styles.parameterValue}>{typeof nitrateLevel === 'number' && !isNaN(nitrateLevel) ? `${nitrateLevel} мг/л` : '-'}</div>
+          </div>
         </div>
       </div>
       <FishInfoModal
