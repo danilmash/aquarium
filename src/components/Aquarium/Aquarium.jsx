@@ -24,10 +24,10 @@ export const Aquarium = ({
   substrate,
   feeding = [],
   feedingSchedule = [],
-  plantingZones = {},
   fertilizer,
   size = {},
-  shape
+  shape,
+  plants = []
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const aquariumRef = useRef(null);
@@ -46,8 +46,21 @@ export const Aquarium = ({
   );
 
   const Plants = useMemo(
-    () => Array.from({ length: getRandomInteger(3, 8) }).map((_, idx) => <Plant key={`plant_${idx}`} />),
-    [],
+    () => {
+      const container = aquariumRef.current?.getBoundingClientRect();
+      const aquariumWidth = container?.width || 800;
+
+      return plants?.map((plant, idx) => (
+        <Plant
+          key={`plant_${idx}`}
+          type={plant}
+          index={idx}
+          totalPlants={plants.length}
+          aquariumWidth={aquariumWidth}
+        />
+      )) || [];
+    },
+    [plants, aquariumRef]
   );
 
   // Запуск анимации
@@ -126,71 +139,65 @@ export const Aquarium = ({
   useEffect(() => {
     const checkPredators = () => {
       const currentTime = Date.now();
-      if (currentTime - lastAttackTimeRef.current < ATTACK_COOLDOWN) {
-        return;
-      }
-
-      const newFishesToRemove = new Set();
+      if (currentTime - lastAttackTimeRef.current < ATTACK_COOLDOWN) return;
 
       setFishes(prevFishes => {
-        const positions = fishPositionsRef.current;
+        const newFishesToRemove = new Set();
         let attackHappened = false;
 
         const updatedFishes = prevFishes.map(fish => {
-          if (fish.isBeingEaten || attackHappened) return fish;
+          if (fish.isBeingEaten) return fish;
 
-          if (!newFishesToRemove.has(fish.id)) {
-            for (const predator of prevFishes) {
-              if (predator.id === fish.id || predator.isBeingEaten || newFishesToRemove.has(predator.id)) continue;
+          const fishPosition = fishPositionsRef.current.get(fish.id);
+          if (!fishPosition) return fish;
 
-              const predatorPos = positions.get(predator.id);
-              const preyPos = positions.get(fish.id);
+          for (const predator of prevFishes) {
+            if (predator.id === fish.id || predator.isBeingEaten) continue;
 
-              if (predatorPos && preyPos) {
-                const distance = Math.sqrt(
-                  Math.pow(predatorPos.x - preyPos.x, 2) +
-                  Math.pow(predatorPos.y - preyPos.y, 2)
-                );
+            const predatorPosition = fishPositionsRef.current.get(predator.id);
+            if (!predatorPosition) continue;
 
-                if (distance < ATTACK_DISTANCE && canEatFish(predator, fish)) {
-                  console.log(`Хищник ${predator.type} охотится на ${fish.type}`);
-                  newFishesToRemove.add(fish.id);
-                  attackHappened = true;
-                  lastAttackTimeRef.current = currentTime;
-                  return { ...fish, isBeingEaten: true };
-                }
-              }
+            const distance = Math.sqrt(
+              Math.pow(predatorPosition.x - fishPosition.x, 2) +
+              Math.pow(predatorPosition.y - fishPosition.y, 2)
+            );
+
+            if (distance < ATTACK_DISTANCE && canEatFish(predator, fish)) {
+              newFishesToRemove.add(fish.id);
+              attackHappened = true;
+              lastAttackTimeRef.current = currentTime;
+              return { ...fish, isBeingEaten: true };
             }
           }
           return fish;
         });
 
+        if (newFishesToRemove.size > 0) {
+          setTimeout(() => {
+            newFishesToRemove.forEach(id => {
+              onRemoveFish(id);
+              const container = aquariumRef.current?.getBoundingClientRect();
+              if (container) {
+                setFishes(prevFishes => {
+                  const remainingFishes = prevFishes.filter(fish => fish.id !== id);
+                  const newPositions = new Map();
+                  remainingFishes.forEach(fish => {
+                    newPositions.set(fish.id, {
+                      x: fish.x,
+                      y: fish.y,
+                      angle: fish.angle
+                    });
+                  });
+                  fishPositionsRef.current = newPositions;
+                  return remainingFishes;
+                });
+              }
+            });
+          }, 1000);
+        }
+
         return updatedFishes;
       });
-
-      if (newFishesToRemove.size > 0) {
-        setTimeout(() => {
-          newFishesToRemove.forEach(id => {
-            onRemoveFish(id);
-            const container = aquariumRef.current?.getBoundingClientRect();
-            if (container) {
-              setFishes(prevFishes => {
-                const remainingFishes = prevFishes.filter(fish => fish.id !== id);
-                const newPositions = new Map();
-                remainingFishes.forEach(fish => {
-                  newPositions.set(fish.id, {
-                    x: fish.x,
-                    y: fish.y,
-                    angle: fish.angle
-                  });
-                });
-                fishPositionsRef.current = newPositions;
-                return remainingFishes;
-              });
-            }
-          });
-        }, 1000);
-      }
     };
 
     const predatorInterval = setInterval(checkPredators, 1000);
@@ -299,13 +306,6 @@ export const Aquarium = ({
           {/* Декорации */}
           {decorations?.map((decor, index) => (
             <div key={index} className={cn(styles.decoration, styles[`decoration-${decor}`])} />
-          ))}
-
-          {/* Растения по зонам */}
-          {Object.entries(plantingZones || {}).map(([zone, plant]) => (
-            <div key={zone} className={cn(styles.plantingZone, styles[`zone-${zone}`])}>
-              <Plant type={plant} />
-            </div>
           ))}
 
           {Plants}

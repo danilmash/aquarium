@@ -13,25 +13,202 @@ $plant-color: #3cb371;
     }
 }
 
+// Анимация для роголистника
+@keyframes hornwortSway {
+
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+// Анимация для элодеи
+@keyframes elodeaSway {
+
+    0%,
+    100% {
+        transform: scaleY(1);
+    }
+
+    50% {
+        transform: scaleY(1.1);
+    }
+}
+
+// Анимация для людвигии
+@keyframes ludwigiaSway {
+
+    0%,
+    100% {
+        transform: rotate(-3deg) scale(1);
+    }
+
+    50% {
+        transform: rotate(3deg) scale(1.05);
+    }
+}
+
+// Анимация для валлиснерии
+@keyframes vallisneriaSway {
+
+    0%,
+    100% {
+        transform: skewX(-5deg);
+    }
+
+    50% {
+        transform: skewX(5deg);
+    }
+}
+
 .plant {
     position: absolute;
     bottom: 0;
-    width: 20px;
-    background: linear-gradient(to top, darken($plant-color, 10%), $plant-color);
-    border-radius: 10px 10px 0 0;
-    animation: plantSway 4s infinite ease-in-out;
-    transform-origin: bottom center;
     z-index: 1;
+    transform-origin: bottom center;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    transition: all 0.3s ease;
 
-    &1 {
-        left: 10%;
-        height: 60px;
-
+    &:hover {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        transform: scale(1.05);
     }
 
-    &2 {
-        left: 80%;
-        height: 40px;
-        animation-duration: 5s;
+    // Водоросли - классические длинные листья
+    &-водоросли {
+        width: 20px;
+        height: 60px;
+        background: linear-gradient(to top, darken(#166534, 10%), #166534);
+        border-radius: 10px 10px 0 0;
+        animation: plantSway 4s infinite ease-in-out;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -5px;
+            width: 30px;
+            height: 100%;
+            background: inherit;
+            border-radius: inherit;
+            opacity: 0.7;
+        }
+    }
+
+    // Роголистник - игольчатые листья
+    &-роголистник {
+        width: 40px;
+        height: 80px;
+        background: linear-gradient(to top, darken(#2d5a27, 10%), #2d5a27);
+        clip-path: polygon(50% 0%, 100% 20%, 100% 100%, 0% 100%, 0% 20%);
+        animation: hornwortSway 5s infinite ease-in-out;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            clip-path: inherit;
+            opacity: 0.7;
+        }
+
+        &::before {
+            transform: rotate(15deg);
+            left: -10px;
+        }
+
+        &::after {
+            transform: rotate(-15deg);
+            right: -10px;
+        }
+    }
+
+    // Элодея - пушистые веточки
+    &-элодея {
+        width: 30px;
+        height: 70px;
+        background: linear-gradient(to top, darken(#1a472a, 10%), #1a472a);
+        border-radius: 15px 15px 0 0;
+        animation: elodeaSway 3s infinite ease-in-out;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 40px;
+            background: inherit;
+            border-radius: 10px;
+            opacity: 0.8;
+        }
+
+        &::before {
+            top: 20px;
+            left: -15px;
+            transform: rotate(-30deg);
+        }
+
+        &::after {
+            top: 30px;
+            right: -15px;
+            transform: rotate(30deg);
+        }
+    }
+
+    // Людвигия - листья с красноватым оттенком
+    &-людвигия {
+        width: 25px;
+        height: 50px;
+        background: linear-gradient(to top, darken(#2d5a27, 10%), #2d5a27);
+        clip-path: polygon(50% 0%, 100% 30%, 100% 100%, 0% 100%, 0% 30%);
+        animation: ludwigiaSway 4s infinite ease-in-out;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10px;
+            width: 45px;
+            height: 100%;
+            background: linear-gradient(to top, darken(#4a7c59, 10%), #4a7c59);
+            clip-path: inherit;
+            opacity: 0.8;
+        }
+    }
+
+    // Валлиснерия - длинные ленточные листья
+    &-валлиснерия {
+        width: 15px;
+        height: 90px;
+        background: linear-gradient(to top, darken(#166534, 10%), #166534);
+        border-radius: 5px 5px 0 0;
+        animation: vallisneriaSway 6s infinite ease-in-out;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            border-radius: inherit;
+            opacity: 0.7;
+        }
+
+        &::before {
+            left: -10px;
+            transform: rotate(-5deg);
+        }
+
+        &::after {
+            right: -10px;
+            transform: rotate(5deg);
+        }
     }
 }

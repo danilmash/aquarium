@@ -37,7 +37,6 @@ const getFinalAquarium = (taskAquarium = {}) => ({
   substrate: taskAquarium.substrate ?? null,
   feeding: taskAquarium.feeding ?? [],
   feedingSchedule: taskAquarium.feedingSchedule ?? [],
-  plantingZones: taskAquarium.plantingZones ?? {},
   fertilizer: taskAquarium.fertilizer ?? null,
   shape: taskAquarium.shape ?? 'стандартный'
 });
@@ -104,11 +103,15 @@ export const Home = () => {
           newAquarium.type = type;
           return `Тип аквариума изменен на: ${type}`;
         },
-        addPlant: (plant) => {
-          newAquarium.plants.push(plant);
-          return `Добавлено растение: ${plant}`;
+        addPlant: (plant, count = 1) => {
+          if (!newAquarium.plants) newAquarium.plants = [];
+          // Добавляем указанное количество растений
+          const plantsToAdd = Array(count).fill(plant);
+          newAquarium.plants = [...newAquarium.plants, ...plantsToAdd];
+          return `Добавлено ${count} ${plant}${count > 1 ? 'а' : ''}`;
         },
         removePlant: (plant) => {
+          if (!newAquarium.plants) newAquarium.plants = [];
           newAquarium.plants = newAquarium.plants.filter((p) => p !== plant);
           return `Удалено растение: ${plant}`;
         },
@@ -204,11 +207,6 @@ export const Home = () => {
         fertilizePlants: (type) => {
           newAquarium.fertilizer = type;
           return `Добавлено удобрение: ${type}`;
-        },
-        setPlantingZone: (zone, plant) => {
-          if (!newAquarium.plantingZones) newAquarium.plantingZones = {};
-          newAquarium.plantingZones[zone] = plant;
-          return `Растение ${plant} размещено в зоне ${zone}`;
         },
 
         // Функции для размеров аквариума
@@ -399,10 +397,10 @@ export const Home = () => {
             substrate={aquarium.substrate}
             feeding={aquarium.feeding}
             feedingSchedule={aquarium.feedingSchedule}
-            plantingZones={aquarium.plantingZones}
             fertilizer={aquarium.fertilizer}
             size={aquarium.size}
             shape={aquarium.shape}
+            plants={aquarium.plants}
           />
 
           <div className="aquarium-params">

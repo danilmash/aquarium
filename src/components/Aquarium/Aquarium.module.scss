@@ -109,29 +109,6 @@ $water-blue: #1a6bb0;
     }
 }
 
-// Зоны посадки растений
-.plantingZone {
-    position: absolute;
-    width: 100px;
-    height: 150px;
-
-    &.zone-передний {
-        bottom: 40px;
-        left: 10%;
-    }
-
-    &.zone-средний {
-        bottom: 40px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    &.zone-задний {
-        bottom: 40px;
-        right: 10%;
-    }
-}
-
 // Фильтры
 .filter {
     position: absolute;
