@@ -1,0 +1,206 @@
+.fish {
+    position: absolute;
+    width: 30px;
+    height: 18px;
+    border-radius: 50% 60% 50% 50%;
+    z-index: 2;
+    cursor: pointer;
+    transition: all 0.3s ease-out;
+    filter: brightness(1) saturate(1.2);
+    will-change: transform;
+    transform-origin: center;
+    margin-left: -15px;
+    margin-top: -9px;
+
+    &.eaten {
+        animation: wobble 1s ease-in-out forwards;
+        pointer-events: none;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-radius: 50% 60% 50% 50%;
+        top: 3px;
+        left: -6px;
+        transform: rotate(180deg);
+    }
+
+    &::before {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: white;
+        border-radius: 50%;
+        top: 6px;
+        right: 4px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    }
+
+    &.clown {
+        background: linear-gradient(to right, #ff9f43, #ff7f00);
+
+        &::after {
+            background: linear-gradient(to right, #ff9f43, #ff7f00);
+        }
+    }
+
+    &.catfish {
+        background: linear-gradient(to right, #978f88, #938e88);
+        box-shadow: 7px -7px 0 -4px #555453, 8px 7px 0 -4px #555453;
+
+        &::after {
+            background: linear-gradient(to right, #676564, #555453);
+        }
+    }
+
+    &.goldfish {
+        background: linear-gradient(to right, #ffcc00, #ffaa00);
+
+        &::after {
+            background: linear-gradient(to right, #ffcc00, #ffaa00);
+        }
+    }
+
+    &.angelfish {
+        width: 22px;
+        height: 30px;
+        margin-left: -11px;
+        margin-top: -15px;
+        background: linear-gradient(to right, #a0d1e7, #7bb8d4);
+
+        &::after {
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(to right, #a0d1e7, #7bb8d4);
+        }
+    }
+
+    &.gourami {
+        background: linear-gradient(to right, #4fc1e9, #2ca9e1);
+
+        &::after {
+            background: linear-gradient(to right, #4fc1e9, #2ca9e1);
+        }
+    }
+
+    &.guppy {
+        background: linear-gradient(to right, #ff6b6b, #ff4d4d);
+
+        &::after {
+            background: linear-gradient(to right, #ff6b6b, #ff4d4d);
+        }
+    }
+
+    &.cichlid {
+        width: 35px;
+        height: 14px;
+        margin-left: -17px;
+        margin-top: -7px;
+        background: linear-gradient(to right, #a58faa, #8c6d93);
+
+        &::after {
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(to right, #a58faa, #8c6d93);
+        }
+    }
+
+    &.barbus {
+        width: 25px;
+        height: 15px;
+        background: linear-gradient(to right, #ffa07a, #ff8c69);
+
+        &::after {
+            background: linear-gradient(to right, #ffa07a, #ff8c69);
+        }
+    }
+
+    &.swordtail {
+        width: 30px;
+        height: 15px;
+        background: linear-gradient(to right, #ff6347, #ff4500);
+
+        &::after {
+            width: 12px;
+            height: 8px;
+            background: linear-gradient(to right, #ff6347, #ff4500);
+        }
+    }
+
+    &.tetra {
+        width: 20px;
+        height: 12px;
+        background: linear-gradient(to right, #87ceeb, #4682b4);
+
+        &::after {
+            background: linear-gradient(to right, #87ceeb, #4682b4);
+        }
+    }
+
+    &.betta {
+        width: 25px;
+        height: 20px;
+        background: linear-gradient(to right, #4169e1, #0000cd);
+
+        &::after {
+            width: 15px;
+            height: 12px;
+            background: linear-gradient(to right, #4169e1, #0000cd);
+        }
+    }
+
+    &.discus {
+        width: 30px;
+        height: 30px;
+        margin-left: -15px;
+        margin-top: -15px;
+        background: linear-gradient(to right, #da70d6, #ba55d3);
+
+        &::after {
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(to right, #da70d6, #ba55d3);
+        }
+    }
+
+    &.danio {
+        width: 22px;
+        height: 12px;
+        background: linear-gradient(to right, #daa520, #cd853f);
+
+        &::after {
+            background: linear-gradient(to right, #daa520, #cd853f);
+        }
+    }
+}
+
+@keyframes wobble {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+        opacity: 1;
+    }
+
+    25% {
+        transform: translate(-50%, -50%) rotate(-15deg) scale(0.9);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) rotate(10deg) scale(0.8);
+        opacity: 0.6;
+    }
+
+    75% {
+        transform: translate(-50%, -50%) rotate(-5deg) scale(0.7);
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+}

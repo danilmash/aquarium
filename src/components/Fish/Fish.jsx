@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../Aquarium/Aquarium.module.scss';
+import styles from './Fish.module.scss';
 
 const FishComponent = ({ fish, onRemove }) => {
     return (

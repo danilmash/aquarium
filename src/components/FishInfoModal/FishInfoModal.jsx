@@ -1,70 +1,71 @@
 import React from 'react';
 import styles from './FishInfoModal.module.scss';
+import { Fish } from '../Fish/Fish';
 
 const fishData = {
     сом: {
         name: 'Сом',
-        aquariumImage: '/images/aquarium/catfish.png',
+        type: 'catfish',
         realImage: '/images/real/catfish.jpg',
     },
     клоун: {
         name: 'Рыба-клоун',
-        aquariumImage: '/images/aquarium/clown.png',
-        realImage: '/images/real/clown.jpg',
+        type: 'clown',
+        realImage: '/images/real/clownfish.jpg',
     },
     гурами: {
         name: 'Гурами',
-        aquariumImage: '/images/aquarium/gourami.png',
+        type: 'gourami',
         realImage: '/images/real/gourami.jpg',
     },
     гуппи: {
         name: 'Гуппи',
-        aquariumImage: '/images/aquarium/guppy.png',
+        type: 'guppy',
         realImage: '/images/real/guppy.jpg',
     },
     цихлида: {
         name: 'Цихлида',
-        aquariumImage: '/images/aquarium/cichlid.png',
+        type: 'cichlid',
         realImage: '/images/real/cichlid.jpg',
     },
     данио: {
         name: 'Данио',
-        aquariumImage: '/images/aquarium/danio.png',
+        type: 'danio',
         realImage: '/images/real/danio.jpg',
     },
     'золотая рыбка': {
         name: 'Золотая рыбка',
-        aquariumImage: '/images/aquarium/goldfish.png',
+        type: 'goldfish',
         realImage: '/images/real/goldfish.jpg',
     },
     скалярия: {
         name: 'Скалярия',
-        aquariumImage: '/images/aquarium/angelfish.png',
+        type: 'angelfish',
         realImage: '/images/real/angelfish.jpg',
     },
     барбус: {
         name: 'Барбус',
-        aquariumImage: '/images/aquarium/barbus.png',
+        type: 'barbus',
         realImage: '/images/real/barbus.jpg',
     },
     меченосец: {
         name: 'Меченосец',
-        aquariumImage: '/images/aquarium/swordtail.png',
+        type: 'swordtail',
         realImage: '/images/real/swordtail.jpg',
     },
     тетра: {
         name: 'Тетра',
-        aquariumImage: '/images/aquarium/tetra.png',
+        type: 'tetra',
         realImage: '/images/real/tetra.jpg',
     },
     петушок: {
         name: 'Петушок',
-        aquariumImage: '/images/aquarium/betta.png',
+        type: 'betta',
         realImage: '/images/real/betta.jpg',
     },
     дискус: {
         name: 'Дискус',
-        aquariumImage: '/images/aquarium/discus.png',
+        type: 'discus',
         realImage: '/images/real/discus.jpg',
     },
 };
@@ -83,7 +84,19 @@ export const FishInfoModal = ({ isOpen, onClose }) => {
                             <h3 className={styles.fishName}>{fish.name}</h3>
                             <div className={styles.fishImages}>
                                 <div className={styles.aquariumView}>
-                                    <img src={fish.aquariumImage} alt={`${fish.name} в аквариуме`} />
+                                    <div className={styles.fishContainer}>
+                                        <Fish
+                                            fish={{
+                                                type: fish.type,
+                                                x: 75,
+                                                y: 75,
+                                                angle: 0,
+                                                id: key,
+                                                isBeingEaten: false
+                                            }}
+                                            onRemove={() => { }}
+                                        />
+                                    </div>
                                     <div className={styles.viewLabel}>В аквариуме</div>
                                 </div>
                                 <div className={styles.realView}>
