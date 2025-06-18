@@ -85,7 +85,8 @@ $water-blue: #1a6bb0;
     transition: all 0.3s ease;
 
     &-камни {
-        bottom: 40px;
+        bottom: 0px;
+        left: 50%;
         width: 60px;
         height: 40px;
         background: #808080;
@@ -93,7 +94,8 @@ $water-blue: #1a6bb0;
     }
 
     &-коряги {
-        bottom: 40px;
+        bottom: 0px;
+        right: 0;
         width: 80px;
         height: 120px;
         background: #8b4513;
@@ -101,7 +103,7 @@ $water-blue: #1a6bb0;
     }
 
     &-грот {
-        bottom: 40px;
+        bottom: 0px;
         width: 100px;
         height: 80px;
         background: #696969;
