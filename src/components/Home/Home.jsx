@@ -43,7 +43,7 @@ const getFinalAquarium = (taskAquarium = {}) => ({
 
 // Основной компонент приложения
 export const Home = () => {
-  const [level, setLevel] = useState(2);
+  const [level, setLevel] = useState(1);
 
   const [code, setCode] = useState('');
   const [aquarium, setAquarium] = useState({});
